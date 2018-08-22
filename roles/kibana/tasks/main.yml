@@ -1,0 +1,15 @@
+---
+- name: Path to config kibana must be create
+  file: path=/etc/kibana state=directory
+
+- name: kibana config be install
+  template: src=kibana.yml.j2 dest=/etc/kibana/kibana.yml
+
+- name: be sure kibana is installed
+  yum: name=kibana-{{ kibana_version }} state=present
+
+- name: restart kibana
+  systemd:
+    name: kibana
+    state: restarted
+    daemon_reload: yes

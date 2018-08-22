@@ -1,0 +1,33 @@
+# ---
+# - name: Elasticsearch with custom configuration
+#   remote_user: root
+#   hosts: test
+#   become: yes
+#   roles:
+#     - role: elastic.elasticsearch
+#   vars:
+#     cluster_hosts: "{{ ansible_play_hosts | map('extract', hostvars, 'private_ipv4') | list }}"
+#     es_instance_name: "{{ ansible_hostname }}"
+#     es_data_dirs:
+#       - "/opt/elasticsearch/data"
+#     es_log_dir: "/opt/elasticsearch/logs"
+#     es_config:
+#       node.name: "node1"
+#       cluster.name: "custom-cluster"
+#       discovery.zen.ping.unicast.hosts: "localhost:9301"
+#       discovery.zen.minimum_master_nodes: 2
+#       http.port: 9201
+#       transport.tcp.port: 9301
+#       node.master: true
+#     es_scripts: false
+#     es_enable_xpack: false
+#     es_allow_downgrades: true
+#     es_heap_size: 1g
+
+
+- name: Simple Example
+  hosts: localhost
+  roles:
+    - role: elastic.elasticsearch
+      es_instance_name: "node1"
+      es_enable_xpack: false
