@@ -18,13 +18,13 @@ class ElasticsearchClient:
         return self._wrap_client_call(
                 'get_ensure_found-{}'.format(kwargs['index']), 
                 lambda: self.get(*args, **kwargs), 
-                lambda r: 'found' in r and r['found'] is True)
+                lambda r: type(r) is dict and 'found' in r and r['found'] is True)
 
     def search_ensure_found(self, *args, **kwargs):
         return self._wrap_client_call(
                 'search_ensure_found-{}'.format(kwargs['index']),
                 lambda: self.search(*args, **kwargs),
-                lambda r: r['hits']['total'] == 1)
+                lambda r: type(r) is dict and 'hits' in r and r['hits']['total'] == 1)
 
     def _wrap_client_call(self, name, call, success_filter=None):
         failed = False

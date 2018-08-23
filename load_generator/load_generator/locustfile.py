@@ -46,16 +46,21 @@ class UserTaskSet(TaskSet):
             'date': str(datetime.datetime.now())
         }
 
-        self.indexed_docs[index_name].append(document)
         self.client.index(index=index_name, doc_type=DefaultType, id=document_id, body=document)
+        self.indexed_docs[index_name].append(document)
+
 
     def update_task(self, index_name):
         if not self.indexed_docs[index_name]:
             return
         document = random.choice(self.indexed_docs[index_name])
-        document['payload'] = generate_payload(25)
-        document['date'] = str(datetime.datetime.now())
-        self.client.update(index=index_name, doc_type=DefaultType, id=document['document_id'], body={'doc': document})
+        new_document = {
+            'payload': generate_payload(25),
+            'date': str(datetime.datetime.now()),
+        }
+        self.client.update(index=index_name, doc_type=DefaultType, id=document['document_id'], body={'doc': new_document})
+        document['payload'] = new_document['payload']
+        document['date'] = new_document['date']
 
     def search_task(self, index_name):
         self.client.search(index=index_name, doc_type=DefaultType, body={
@@ -111,7 +116,7 @@ class UserEndlessTaskSet(TaskSet):
     tasks = {UserTaskSet: 1}
 
 class User(ElasticsearchRpcLocust):
-    host = '10.33.51.142;10.33.51.144;10.33.51.32'
+    host = '10.33.51.142;10.33.51.32;10.33.51.144'
     min_wait = 100
     max_wait = 1000
     task_set = UserEndlessTaskSet
